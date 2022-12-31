@@ -118,33 +118,102 @@ function fromJSON(proto, json) {
  *  For more examples see unit tests.
  */
 
+class MySuperBaseElementSelector {
+  constructor() {
+    this.accumulator = '';
+    this.curOrder = 0;
+    this.orderErrorText = 'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element';
+    this.uniqueErrorText = 'Element, id and pseudo-element should not occur more then one time inside the selector';
+  }
+
+  checkOrderAndUnique(order) {
+    if (order === this.curOrder && (order === 1 || order === 2 || order === 6)) {
+      throw new Error(this.uniqueErrorText);
+    }
+    if (this.curOrder > order) {
+      throw new Error(this.orderErrorText);
+    }
+  }
+
+  element(value) {
+    this.checkOrderAndUnique(1);
+    this.curOrder = 1;
+    this.accumulator += value;
+    return this;
+  }
+
+  id(value) {
+    this.checkOrderAndUnique(2);
+    this.curOrder = 2;
+    this.accumulator += `#${value}`;
+    return this;
+  }
+
+  class(value) {
+    this.checkOrderAndUnique(3);
+    this.curOrder = 3;
+    this.accumulator += `.${value}`;
+    return this;
+  }
+
+  attr(value) {
+    this.checkOrderAndUnique(4);
+    this.curOrder = 4;
+    this.accumulator += `[${value}]`;
+    return this;
+  }
+
+  pseudoClass(value) {
+    this.checkOrderAndUnique(5);
+    this.curOrder = 5;
+    this.accumulator += `:${value}`;
+    return this;
+  }
+
+  pseudoElement(value) {
+    this.checkOrderAndUnique(6);
+    this.curOrder = 6;
+    this.accumulator += `::${value}`;
+    return this;
+  }
+
+  combine(selector1, combinator, selector2) {
+    this.accumulator = ''.concat(selector1.accumulator, ' ', combinator, ' ', selector2.accumulator);
+    return this;
+  }
+
+  stringify() {
+    return this.accumulator;
+  }
+}
+
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    return new MySuperBaseElementSelector().element(value);
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    return new MySuperBaseElementSelector().id(value);
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    return new MySuperBaseElementSelector().class(value);
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    return new MySuperBaseElementSelector().attr(value);
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    return new MySuperBaseElementSelector().pseudoClass(value);
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    return new MySuperBaseElementSelector().pseudoElement(value);
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    return new MySuperBaseElementSelector().combine(selector1, combinator, selector2);
   },
 };
 

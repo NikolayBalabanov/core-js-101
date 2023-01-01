@@ -387,8 +387,9 @@ function isBracketsBalanced(str) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  // throw new Error('Not implemented');
+  return num.toString(n);
 }
 
 
@@ -404,8 +405,20 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  // throw new Error('Not implemented');
+  const commonDirPath = [];
+  const pathesArray = pathes.map((el) => el.split('/'));
+  for (let i = 1; i < pathesArray.length; i += 1) {
+    for (let j = 0; j < pathesArray[0].length; j += 1) {
+      if (pathesArray.slice(1).every((elem) => elem[j] === pathesArray[0][j])) {
+        commonDirPath.push(pathesArray[0][j]);
+      }
+    }
+  }
+  return commonDirPath.join('/').length > 1
+    ? commonDirPath.join('/').concat('/')
+    : commonDirPath.join('/');
 }
 
 
@@ -427,8 +440,25 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  // throw new Error('Not implemented');
+  const m1Row = m1.length;
+  const m2Row = m2.length;
+  const m2Col = m2[0].length;
+  const result = [];
+  for (let row = 0; row < m1Row; row += 1) {
+    result[row] = [0];
+  }
+  for (let col = 0; col < m2Col; col += 1) {
+    for (let cellRow = 0; cellRow < m1Row; cellRow += 1) {
+      let cellVal = 0;
+      for (let cellCol = 0; cellCol < m2Row; cellCol += 1) {
+        cellVal += m1[cellRow][cellCol] * m2[cellCol][col];
+      }
+      result[cellRow][col] = cellVal;
+    }
+  }
+  return result;
 }
 
 
@@ -462,8 +492,27 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  // throw new Error('Not implemented');
+  // You underestimate my power
+  if (position[0][0] !== undefined
+    && ((position[0][0] === position[1][0] && position[0][0] === position[2][0])
+    || (position[0][0] === position[0][1] && position[0][0] === position[0][2])
+    || (position[0][0] === position[1][1] && position[0][0] === position[2][2]))) {
+    return position[0][0];
+  }
+  if (position[1][1] !== undefined
+    && ((position[1][1] === position[1][0] && position[1][1] === position[1][2])
+    || (position[1][1] === position[0][1] && position[1][1] === position[2][1])
+    || (position[1][1] === position[0][2] && position[1][1] === position[2][0]))) {
+    return position[1][1];
+  }
+  if (position[2][2] !== undefined
+    && ((position[2][2] === position[2][0] && position[2][2] === position[2][1])
+    || (position[2][2] === position[1][2] && position[2][2] === position[0][2]))) {
+    return position[2][2];
+  }
+  return undefined;
 }
 
 
